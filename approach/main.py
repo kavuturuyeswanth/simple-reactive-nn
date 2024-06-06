@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import numpy as np
 import argparse
 from actorcitic4 import Actor
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     os.environ['OMP_NUM_THREADS'] = '1'
     
     args = parser.parse_args()
-    env = gym.make("FetchPickAndPlace-v1")
+    env = gym.make("FetchPickAndPlace-v3")
     shared_model = Actor()
     if args.use_cuda:
         shared_model.cuda()
