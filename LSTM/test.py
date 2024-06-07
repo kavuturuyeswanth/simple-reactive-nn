@@ -1,4 +1,4 @@
-import gym
+import gymnaium as gym
 import random
 import numpy as np
 import argparse
@@ -17,7 +17,7 @@ SAVEPATH1 = os.getcwd() + '/train/actor_params.pth'
 #SAVEPATH2 = os.getcwd() + '/train/saved_weights.pth'
 SAVEPATH2 = os.getcwd() + '/weights/actor_params.pth'
 
-env = gym.make("FetchPickAndPlace-v1")
+env = gym.make("FetchPickAndPlace-v2")
 env2 = gym.wrappers.FlattenDictWrapper(env, dict_keys=['observation', 'desired_goal'])
 
 parser = argparse.ArgumentParser(description='A3C')
@@ -72,7 +72,7 @@ model2.eval()
 max_eps = 200000
 max_steps = 50
 ep_numb = 0
-done = True
+terminated = True
 success = 0         
 
 while ep_numb < max_eps:
@@ -111,7 +111,7 @@ while ep_numb < max_eps:
         object_oriented_goal[2] += 0.03
         
         action[3] = 0.05
-        obsDataNew, reward, done, info = env.step(action)
+        obsDataNew, reward, terminated, truncated, info = env.step(action)
         timeStep += 1
         objectPos = obsDataNew['observation'][3:6]
         object_rel_pos = obsDataNew['observation'][6:9]
@@ -135,7 +135,7 @@ while ep_numb < max_eps:
         if action_out == 0:
             action[5] = act_tensor[3].cpu().detach().numpy()
         
-        obsDataNew, reward, done, info = env.step(action)
+        obsDataNew, reward, terminated, truncated, info = env.step(action)
         timeStep += 1
 
         objectPos = obsDataNew['observation'][3:6]
@@ -158,7 +158,7 @@ while ep_numb < max_eps:
             action[i] = act_tensor[i].cpu().detach().numpy()
         
         action[3] = -0.01
-        obsDataNew, reward, done, info = env.step(action)
+        obsDataNew, reward, terminated, truncated, info = env.step(action)
         timeStep += 1
         state_inp = torch.from_numpy(env2.observation(obsDataNew)).type(FloatTensor)
         objectPos = obsDataNew['observation'][3:6]
@@ -170,7 +170,7 @@ while ep_numb < max_eps:
         action = [0, 0, 0, 0, 0, 0]
         action[3] = -0.01 # keep the gripper closed
 
-        obsDataNew, reward, done, info = env.step(action)
+        obsDataNew, reward, terminated, truncated, info = env.step(action)
         timeStep += 1
 
         objectPos = obsDataNew['observation'][3:6]
@@ -180,6 +180,7 @@ while ep_numb < max_eps:
 
     if info['is_success'] == 1.0:
         success +=1
-    if done:
+        print("success: ",success)
+    if terminated:
         if ep_numb % 100==0:            
             print("num episodes {}, success {}".format(ep_numb, success))
