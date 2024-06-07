@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import numpy as np
 import argparse
 from actorcritic import Actor, second, act
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     os.environ['OMP_NUM_THREADS'] = '1'
     
     args = parser.parse_args()
-    env = gym.make("FetchPickAndPlace-v1")
+    env = gym.make("FetchPickAndPlace-v2")
     shared_model = Actor()
     if args.use_cuda:
         shared_model.cuda()
