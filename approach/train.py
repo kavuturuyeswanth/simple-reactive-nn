@@ -27,7 +27,7 @@ def ensure_shared_grads(model, shared_model):
 def train(rank, args, shared_model, counter, lock, optimizer=None):
     FloatTensor = torch.cuda.FloatTensor if args.use_cuda else torch.FloatTensor
     
-    env = gym.make("FetchPickAndPlace-v3")
+    env = gym.make("FetchPickAndPlace-v2")
     env2 = gym.wrappers.FlattenDictWrapper(env, dict_keys=['observation', 'desired_goal'])
 
     model = Actor()
@@ -140,7 +140,7 @@ def train(rank, args, shared_model, counter, lock, optimizer=None):
 def test(rank, args, shared_model, counter):
     
     FloatTensor = torch.cuda.FloatTensor if args.use_cuda else torch.FloatTensor
-    env = gym.make("FetchPickAndPlace-v3")
+    env = gym.make("FetchPickAndPlace-v2")
     env2 = gym.wrappers.FlattenDictWrapper(env, dict_keys=['observation', 'desired_goal'])
 
     model = Actor()
